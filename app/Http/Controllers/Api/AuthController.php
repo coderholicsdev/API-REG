@@ -45,4 +45,62 @@ class AuthController extends Controller
  
        
     }
+
+
+    public function login(Request $request){
+        $validator = Validator::make($request->all(), [
+            'email'=>'required|email',
+            'password'=>'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message'=>'Validation fails',
+                'errors'=>$validator->errors()
+            ],422);
+        }
+
+        $user=User::where('email',$request->email)->first();
+
+        if($user){
+
+            if(Hash::check($request->password,$user->password)){
+
+                $token=$user->createToken('usertoken')->plainTextToken;
+
+                return response()->json([
+                    'message'=>'Login Successfull',
+                    'data'=>$user,
+                    'token'=>$token
+                ],201); 
+
+            }else{
+                return response()->json([
+                    'message'=>'Incorrect credentials',
+                ],400); 
+            }
+
+        }else{
+
+            return response()->json([
+                'message'=>'Incorrect credentials',
+            ],400); 
+        }
+
+    }
+
+    public function user(Request $request){
+        return response()->json([
+            'message'=>'User successfully fetched',
+            'data'=>$request->user()
+        ],200); 
+    }
+
+    public function logout(Request $request){
+
+       $request->user()->tokens()->delete(); 
+        return response()->json([
+            'message'=>'User successfully logged out',
+        ],200); 
+    }
 }
