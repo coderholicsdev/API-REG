@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Hospitals;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Psr\Log\NullLogger;
@@ -18,15 +19,43 @@ class UserController extends Controller
         return $users;
     }
 
-    public function searchHospitalsByNameAPI($id=null){
+    function search($name)
+    {
+        $result = Hospitals::where('hospital_name', $name)->get();
+        if(count($result)){
+         return Response()->json($result);
+        }
+        else
+        {
+        return response()->json(['Result' => 'Result not found'], 404);
+      }
+    }
+
+
+    public function hospitals($id=null){
         if($id){
-            $hospitals = DB::table('hospitals')->where('hospital_name',$id)->get();
+            $hospitalsList = DB::table('hospitals')->where('id',$id)->get();
         }else {
-            $hospitals = DB::table('hospitals')->get();
+            $hospitalsList = DB::table('hospitals')->get();
         }
         
-        return $hospitals;
+        return $hospitalsList;
     }
+
+    // public function searchHospitalsByNameAPI($id=null){
+    //     if($id){
+    //         $hospitals = DB::table('hospitals')->where('hospital_name',$id)->get();
+    //     } 
+    //      else{
+            
+    //         $hospitals = DB::table('hospitals')->get();
+    //     }
+        
+        
+    //     return $hospitals;
+    // }
+
+    
 
 
 

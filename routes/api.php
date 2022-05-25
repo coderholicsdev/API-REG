@@ -32,4 +32,6 @@ Route::post('/create/hospital',[HospitalsController::class, 'store']);
 
 //GET
 Route::get('users/{id?}',[UserController::class,'usersAPI']);
-Route::get('hospitals/{id?}',[UserController::class,'searchHospitalsByNameAPI']);
+Route::get('/hospitals/search/{name}',[UserController::class,'search']);
+Route::get('hospitalsList/{id?}',[UserController::class,'hospitals']);
+// Route::get('hospitals/{id?}',[UserController::class,'searchHospitalsByNameAPI']);
